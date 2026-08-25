@@ -107,11 +107,20 @@ namespace GameAssets.Scripts.Entities.Player
 
             if (_currentVelocity != Vector3.zero)
             {
-                _animatorController.MotionValue = _isRunning ? 2 : 1;
+                _animatorController.VerticalValue = _isRunning ? 2 : 1;
+                if (_input.x != 0 && _input.y == 0)
+                {
+                    _animatorController.HorizontalValue = _input.x;
+                }
+                else if(_input.y != 0)
+                {
+                    _animatorController.HorizontalValue = 0;
+                }
             }
             else
             {
-                _animatorController.MotionValue = 0;
+                _animatorController.VerticalValue = 0;
+                _animatorController.HorizontalValue = 0;
             }
             
             if (targetDirection.sqrMagnitude > 0.1f)

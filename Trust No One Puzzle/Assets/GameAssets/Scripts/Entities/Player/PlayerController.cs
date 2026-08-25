@@ -4,12 +4,6 @@ using UnityEngine.InputSystem;
 
 namespace GameAssets.Scripts.Entities.Player
 {
-    enum RunType
-    {
-        Button,
-        Hold
-    }
-
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
     {
@@ -18,14 +12,14 @@ namespace GameAssets.Scripts.Entities.Player
         [SerializeField] private InputActionReference runAction;
 
         [Header("Player Settings")]
+        [SerializeField] private bool isFirstPerson;
         [SerializeField] private float walkSpeed, runSpeed;
         [SerializeField] private float rotationSpeed;
         [SerializeField] private float acceleration, deceleration;
-        [SerializeField] private RunType runBehaviour;
+        [SerializeField] private bool holdToRun;
     
         [Header("Audio Settings")]
         [SerializeField] private AudioSource source;
-        [SerializeField] private AudioClip[] footstepClips;
         [SerializeField] private float walkDelaySteps, runDelaySteps;
         
         [Header("References")]
@@ -51,7 +45,7 @@ namespace GameAssets.Scripts.Entities.Player
             moveAction.action.canceled += ActionOnMove;
         
             runAction.action.started += ActionOnRun;
-            if(runBehaviour == RunType.Hold)
+            if(holdToRun)
                 runAction.action.canceled += ActionOnRun;
 
             _controller = GetComponent<CharacterController>();
@@ -66,7 +60,7 @@ namespace GameAssets.Scripts.Entities.Player
             moveAction.action.canceled -= ActionOnMove;
 
             runAction.action.started -= ActionOnRun;
-            if(runBehaviour == RunType.Hold)
+            if(holdToRun)
                 runAction.action.canceled -= ActionOnRun;
         
             moveAction.action.Disable();
@@ -82,14 +76,21 @@ namespace GameAssets.Scripts.Entities.Player
 
         private void RotationHandler()
         {
-            if (_input.sqrMagnitude > 0.1f)
-            {
-                var inputDirection = new Vector3(_input.x, 0, _input.y).normalized;
-                var cameraForward = Vector3.Scale(cam.forward, new Vector3(1, 0, 1)).normalized;
-                var moveDirection = inputDirection.x * cam.right + inputDirection.z * cameraForward;
+            var cameraForward = Vector3.Scale(cam.forward, new Vector3(1, 0, 1)).normalized;
             
-                if (moveDirection != Vector3.zero)
+            if (isFirstPerson)
+            {
+                var targetRotation = Quaternion.LookRotation(cameraForward);
+                transform.rotation =
+                    Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+            else
+            {
+                if (_input.sqrMagnitude > 0.1f)
                 {
+                    var inputDirection = new Vector3(_input.x, 0, _input.y).normalized;
+                    var moveDirection = inputDirection.x * cam.right + inputDirection.z * cameraForward;
+                    
                     var targetRotation = Quaternion.LookRotation(moveDirection);
                     transform.rotation =
                         Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);

@@ -3,12 +3,12 @@ using UnityEngine.InputSystem;
 
 namespace GameAssets.Scripts.Entities.Player
 {
-    public class CameraController : MonoBehaviour
+    public class TPPCameraController : MonoBehaviour
     {
         [Header("Input Actions")]
         [SerializeField] private InputActionReference lookAction;
-    
-        [Header("Camera settings")]
+
+        [Header("Camera settings")] 
         [SerializeField] private float sensitivity;
         [SerializeField] private Vector2 pitchLimits;
         [SerializeField] private Vector3 offset;
@@ -52,7 +52,7 @@ namespace GameAssets.Scripts.Entities.Player
             Cursor.visible = !value;
         }
 
-        private void LateUpdate()
+        private void Update()
         {
             RotationHandler();
             CollisionHandler();

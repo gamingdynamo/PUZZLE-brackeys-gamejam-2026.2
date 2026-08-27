@@ -157,7 +157,7 @@ namespace GameAssets.Scripts.Entities.Player
         {
             while (true)
             {
-                if (_currentVelocity.sqrMagnitude > 0.1f && _controller.isGrounded)
+                if (_controller.isGrounded && _controller.velocity.sqrMagnitude > 0.5f)
                 {
                     source.Play();
                 }

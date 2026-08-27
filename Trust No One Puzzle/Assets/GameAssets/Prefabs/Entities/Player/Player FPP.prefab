@@ -611,8 +611,40 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 9036000000000000001}
   m_Father: {fileID: 2896910727495265456}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9036000000000000000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9036000000000000001}
+  m_Layer: 0
+  m_Name: CarryLocation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9036000000000000001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9036000000000000000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6079393837458731913}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &8719422010191010497
 Camera:
@@ -1670,6 +1702,23 @@ MonoBehaviour:
   lookAction: {fileID: -5630151704836100654, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   sensitivity: 0.2
   pitchLimits: {x: -89, y: 89}
+  showReticle: 1
+  reticleSize: 14
+  reticleThickness: 2
+  reticleColor: {r: 1, g: 1, b: 1, a: 1}
+  targetHighlightMaterial: {fileID: 2100000, guid: 990a06ffeda43734e864d545330e132e, type: 2}
+  interactionDistance: 3
+  interactionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  obstructionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  nameLabelFont: {fileID: 0}
+  nameLabelOffset: 24
+  carryLocation: {fileID: 9036000000000000001}
+  carriedScaleMultiplier: 0.65
+  carryLerpSpeed: 12
 --- !u!1 &5912970894186823156
 GameObject:
   m_ObjectHideFlags: 0

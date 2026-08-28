@@ -1,0 +1,285 @@
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Events;
+
+namespace GameAssets.Scripts.Interaction
+{
+    /// <summary>
+    /// Generic openable furniture component that implements IInteractable.
+    /// Supports rotating (doors, lids, cabinet doors) and sliding (drawers) open modes,
+    /// optional locking, audio feedback, and UnityEvents.
+    ///
+    /// Attach this to any GameObject with a Collider. The PlayerInteraction system
+    /// handles raycast detection and input — this script only manages the open/close behaviour.
+    ///
+    /// Scene hierarchy example:
+    ///   Furniture (this script + Collider)
+    ///     └── MovingPart  ← the part that rotates or slides
+    /// </summary>
+    [RequireComponent(typeof(Collider))]
+    public class OpenableInteractable : MonoBehaviour, IInteractable
+    {
+        public enum OpenMode
+        {
+            /// <summary>Rotates the moving part (doors, lids, cabinet doors).</summary>
+            Rotate,
+            /// <summary>Slides the moving part along a local offset (drawers).</summary>
+            Slide
+        }
+
+        // ─────────────────────────────────────────────
+        //  Inspector Fields
+        // ─────────────────────────────────────────────
+
+        [Header("Moving Part")]
+        [Tooltip("The child transform that moves when opened/closed. If left empty, uses this transform.")]
+        [SerializeField] private Transform movingPart;
+
+        [Tooltip("Whether the part rotates (door/lid) or slides (drawer).")]
+        [SerializeField] private OpenMode openMode = OpenMode.Rotate;
+
+        [Header("Rotate Mode")]
+        [Tooltip("Euler angles (local space) the part rotates to when open. e.g. (0, 90, 0) for a door.")]
+        [SerializeField] private Vector3 openRotation = new Vector3(0f, 90f, 0f);
+
+        [Header("Slide Mode")]
+        [Tooltip("Local-space offset the part slides to when open. e.g. (0, 0, 0.4) for a drawer.")]
+        [SerializeField] private Vector3 openOffset = new Vector3(0f, 0f, 0.4f);
+
+        [Header("Animation")]
+        [Tooltip("Duration of the open/close animation in seconds.")]
+        [SerializeField] private float animationDuration = 0.6f;
+
+        [Tooltip("Easing curve for the animation.")]
+        [SerializeField] private AnimationCurve animationCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+
+        [Header("Lock (Optional)")]
+        [Tooltip("If true, the object starts locked and requires Unlock() to be called first.")]
+        [SerializeField] private bool startsLocked;
+
+        [Header("Audio (Optional)")]
+        [Tooltip("AudioSource for playing interaction sounds. If null, no sound plays.")]
+        [SerializeField] private AudioSource audioSource;
+
+        [Tooltip("Sound played when the object opens.")]
+        [SerializeField] private AudioClip openSound;
+
+        [Tooltip("Sound played when the object closes.")]
+        [SerializeField] private AudioClip closeSound;
+
+        [Tooltip("Sound played when the player tries to interact while locked.")]
+        [SerializeField] private AudioClip lockedSound;
+
+        [Header("Events")]
+        [Tooltip("Fired when the object finishes opening.")]
+        public UnityEvent OnOpened;
+
+        [Tooltip("Fired when the object finishes closing.")]
+        public UnityEvent OnClosed;
+
+        [Tooltip("Fired when the player tries to interact but the object is locked.")]
+        public UnityEvent OnLockedAttempt;
+
+        // ─────────────────────────────────────────────
+        //  Runtime State
+        // ─────────────────────────────────────────────
+
+        private bool _isOpen;
+        private bool _isLocked;
+        private bool _isAnimating;
+        private Quaternion _closedRotation;
+        private Quaternion _openRotationQ;
+        private Vector3 _closedPosition;
+        private Vector3 _openPosition;
+        private Coroutine _animationCoroutine;
+
+        // ─────────────────────────────────────────────
+        //  IInteractable
+        // ─────────────────────────────────────────────
+
+        /// <inheritdoc/>
+        public string InteractionPrompt
+        {
+            get
+            {
+                if (_isLocked) return "Locked [Need Key]";
+                if (_isAnimating) return "";
+                return _isOpen ? "Press [E] to Close" : "Press [E] to Open";
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool CanInteract => !_isAnimating;
+
+        /// <inheritdoc/>
+        public void OnInteract()
+        {
+            if (_isAnimating) return;
+
+            if (_isLocked)
+            {
+                PlaySound(lockedSound);
+                OnLockedAttempt?.Invoke();
+                return;
+            }
+
+            if (_isOpen)
+                Close();
+            else
+                Open();
+        }
+
+        // ─────────────────────────────────────────────
+        //  Unity Lifecycle
+        // ─────────────────────────────────────────────
+
+        private void Awake()
+        {
+            if (movingPart == null)
+                movingPart = transform;
+
+            _isLocked = startsLocked;
+
+            // Cache closed state
+            _closedRotation = movingPart.localRotation;
+            _closedPosition = movingPart.localPosition;
+
+            // Compute open targets
+            _openRotationQ = _closedRotation * Quaternion.Euler(openRotation);
+            _openPosition = _closedPosition + openOffset;
+        }
+
+        // ─────────────────────────────────────────────
+        //  Public API
+        // ─────────────────────────────────────────────
+
+        /// <summary>Opens the object with animation.</summary>
+        public void Open()
+        {
+            if (_isOpen || _isAnimating || _isLocked) return;
+
+            PlaySound(openSound);
+            _animationCoroutine = StartCoroutine(Animate(true));
+        }
+
+        /// <summary>Closes the object with animation.</summary>
+        public void Close()
+        {
+            if (!_isOpen || _isAnimating) return;
+
+            PlaySound(closeSound);
+            _animationCoroutine = StartCoroutine(Animate(false));
+        }
+
+        /// <summary>Instantly snaps to the open position without animation.</summary>
+        public void ForceOpen()
+        {
+            StopCurrentAnimation();
+            _isOpen = true;
+            ApplyState(_openRotationQ, _openPosition);
+        }
+
+        /// <summary>Instantly snaps to the closed position without animation.</summary>
+        public void ForceClose()
+        {
+            StopCurrentAnimation();
+            _isOpen = false;
+            ApplyState(_closedRotation, _closedPosition);
+        }
+
+        /// <summary>Unlocks the object so the player can interact.</summary>
+        public void Unlock()
+        {
+            _isLocked = false;
+        }
+
+        /// <summary>Locks the object. If currently open, force-closes it.</summary>
+        public void Lock()
+        {
+            _isLocked = true;
+
+            if (_isOpen)
+                ForceClose();
+        }
+
+        /// <summary>Whether the object is currently in the open state.</summary>
+        public bool IsOpen => _isOpen;
+
+        /// <summary>Whether the object is currently locked.</summary>
+        public bool IsLocked => _isLocked;
+
+        // ─────────────────────────────────────────────
+        //  Animation
+        // ─────────────────────────────────────────────
+
+        private IEnumerator Animate(bool opening)
+        {
+            _isAnimating = true;
+
+            Quaternion fromRot = opening ? _closedRotation : _openRotationQ;
+            Quaternion toRot = opening ? _openRotationQ : _closedRotation;
+            Vector3 fromPos = opening ? _closedPosition : _openPosition;
+            Vector3 toPos = opening ? _openPosition : _closedPosition;
+
+            float elapsed = 0f;
+
+            while (elapsed < animationDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = animationCurve.Evaluate(Mathf.Clamp01(elapsed / animationDuration));
+
+                if (openMode == OpenMode.Rotate)
+                    movingPart.localRotation = Quaternion.Slerp(fromRot, toRot, t);
+                else
+                    movingPart.localPosition = Vector3.Lerp(fromPos, toPos, t);
+
+                yield return null;
+            }
+
+            // Snap to final state
+            if (openMode == OpenMode.Rotate)
+                movingPart.localRotation = toRot;
+            else
+                movingPart.localPosition = toPos;
+
+            _isOpen = opening;
+            _isAnimating = false;
+            _animationCoroutine = null;
+
+            if (opening)
+                OnOpened?.Invoke();
+            else
+                OnClosed?.Invoke();
+        }
+
+        private void StopCurrentAnimation()
+        {
+            if (_animationCoroutine != null)
+            {
+                StopCoroutine(_animationCoroutine);
+                _animationCoroutine = null;
+            }
+            _isAnimating = false;
+        }
+
+        private void ApplyState(Quaternion rotation, Vector3 position)
+        {
+            if (movingPart == null) return;
+
+            if (openMode == OpenMode.Rotate)
+                movingPart.localRotation = rotation;
+            else
+                movingPart.localPosition = position;
+        }
+
+        // ─────────────────────────────────────────────
+        //  Audio
+        // ─────────────────────────────────────────────
+
+        private void PlaySound(AudioClip clip)
+        {
+            if (audioSource != null && clip != null)
+                audioSource.PlayOneShot(clip);
+        }
+    }
+}

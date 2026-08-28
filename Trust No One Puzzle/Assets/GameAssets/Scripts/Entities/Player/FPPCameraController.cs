@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 using GameAssets.Scripts.Entities;
@@ -38,6 +38,7 @@ namespace GameAssets.Scripts.Entities.Player
         [SerializeField] private Transform carryLocation;
         [SerializeField, Range(0.05f, 1f)] private float carriedScaleMultiplier = 0.65f;
         [SerializeField, Min(0f)] private float carryLerpSpeed = 12f;
+        [SerializeField, Min(0f)] private float throwForce = 15f;
 
         private Vector2 _input;
         private float _pitch, _yaw;
@@ -214,6 +215,10 @@ namespace GameAssets.Scripts.Entities.Player
                 {
                     BeginDrop();
                 }
+                else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    ThrowCarriedObject();
+                }
                 return;
             }
 
@@ -282,6 +287,24 @@ namespace GameAssets.Scripts.Entities.Player
             _droppingInteractable = _carriedInteractable;
             _dropTargetPosition = GetDropTargetPosition();
             _carriedInteractable = null;
+        }
+
+        private void ThrowCarriedObject()
+        {
+            var thrownTransform = _carriedInteractable.transform;
+            thrownTransform.localScale = _carriedOriginalScale;
+
+            if (_carriedRigidbody != null)
+            {
+                _carriedRigidbody.isKinematic = _carriedRigidbodyWasKinematic;
+                _carriedRigidbody.AddForce(_camera.transform.forward * throwForce, ForceMode.Impulse);
+            }
+
+            RestoreCarriedColliders();
+            _carriedInteractable = null;
+            _carriedRigidbody = null;
+            _carriedColliders = null;
+            _carriedColliderStates = null;
         }
 
         private Vector3 GetDropTargetPosition()

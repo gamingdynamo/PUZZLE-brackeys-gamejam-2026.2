@@ -250,6 +250,11 @@ namespace GameAssets.Scripts.Entities.Player
 
         private void PickUpObject(Interactable interactable)
         {
+            if (interactable.pickupSound != null)
+            {
+                AudioSource.PlayClipAtPoint(interactable.pickupSound, interactable.transform.position);
+            }
+
             _carriedInteractable = interactable;
             _carriedRigidbody = interactable.GetComponentInChildren<Rigidbody>();
             _carriedOriginalScale = interactable.transform.localScale;
@@ -284,6 +289,11 @@ namespace GameAssets.Scripts.Entities.Player
 
         private void BeginDrop()
         {
+            if (_carriedInteractable.dropSound != null)
+            {
+                AudioSource.PlayClipAtPoint(_carriedInteractable.dropSound, _carriedInteractable.transform.position);
+            }
+
             _droppingInteractable = _carriedInteractable;
             _dropTargetPosition = GetDropTargetPosition();
             _carriedInteractable = null;
@@ -291,6 +301,11 @@ namespace GameAssets.Scripts.Entities.Player
 
         private void ThrowCarriedObject()
         {
+            if (_carriedInteractable.throwSound != null)
+            {
+                AudioSource.PlayClipAtPoint(_carriedInteractable.throwSound, _camera.transform.position);
+            }
+
             var thrownTransform = _carriedInteractable.transform;
             thrownTransform.localScale = _carriedOriginalScale;
 

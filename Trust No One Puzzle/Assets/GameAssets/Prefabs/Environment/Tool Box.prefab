@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 6314591866602726418}
   - component: {fileID: 5945947017768467928}
   - component: {fileID: 2262502198966808457}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Tool Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameAssets.Scripts.Interaction.ToolBoxInteractable
   cover: {fileID: 3924440901379594043}
-  hingeAxis: {x: 1, y: 0, z: 0}
+  hingeAxis: {x: 0, y: 0, z: 1}
   openAngle: -110
   animationDuration: 0.6
   animationCurve:
@@ -257,11 +257,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  startsLocked: 1
+  startsLocked: 0
   audioSource: {fileID: 2262502198966808457}
-  openSound: {fileID: 0}
-  closeSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  openSound: {fileID: 8300000, guid: 47f3ff882835298439c2d7e0ff5300a0, type: 3}
+  closeSound: {fileID: 8300000, guid: 47f3ff882835298439c2d7e0ff5300a0, type: 3}
+  lockedSound: {fileID: 8300000, guid: 0b77b17a92decff4986e6155cc25ff52, type: 3}
   OnOpened:
     m_PersistentCalls:
       m_Calls: []

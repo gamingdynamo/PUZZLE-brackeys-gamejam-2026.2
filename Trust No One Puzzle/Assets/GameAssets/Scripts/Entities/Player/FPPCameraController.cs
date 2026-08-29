@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 using GameAssets.Scripts.Entities;
@@ -38,6 +38,7 @@ namespace GameAssets.Scripts.Entities.Player
         [SerializeField] private Transform carryLocation;
         [SerializeField, Range(0.05f, 1f)] private float carriedScaleMultiplier = 0.65f;
         [SerializeField, Min(0f)] private float carryLerpSpeed = 12f;
+        [SerializeField, Min(0f)] private float throwForce = 15f;
 
         private Vector2 _input;
         private float _pitch, _yaw;
@@ -214,6 +215,10 @@ namespace GameAssets.Scripts.Entities.Player
                 {
                     BeginDrop();
                 }
+                else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    ThrowCarriedObject();
+                }
                 return;
             }
 
@@ -245,6 +250,11 @@ namespace GameAssets.Scripts.Entities.Player
 
         private void PickUpObject(Interactable interactable)
         {
+            if (interactable.pickupSound != null)
+            {
+                AudioSource.PlayClipAtPoint(interactable.pickupSound, interactable.transform.position);
+            }
+
             _carriedInteractable = interactable;
             _carriedRigidbody = interactable.GetComponentInChildren<Rigidbody>();
             _carriedOriginalScale = interactable.transform.localScale;
@@ -279,9 +289,37 @@ namespace GameAssets.Scripts.Entities.Player
 
         private void BeginDrop()
         {
+            if (_carriedInteractable.dropSound != null)
+            {
+                AudioSource.PlayClipAtPoint(_carriedInteractable.dropSound, _carriedInteractable.transform.position);
+            }
+
             _droppingInteractable = _carriedInteractable;
             _dropTargetPosition = GetDropTargetPosition();
             _carriedInteractable = null;
+        }
+
+        private void ThrowCarriedObject()
+        {
+            if (_carriedInteractable.throwSound != null)
+            {
+                AudioSource.PlayClipAtPoint(_carriedInteractable.throwSound, _camera.transform.position);
+            }
+
+            var thrownTransform = _carriedInteractable.transform;
+            thrownTransform.localScale = _carriedOriginalScale;
+
+            if (_carriedRigidbody != null)
+            {
+                _carriedRigidbody.isKinematic = _carriedRigidbodyWasKinematic;
+                _carriedRigidbody.AddForce(_camera.transform.forward * throwForce, ForceMode.Impulse);
+            }
+
+            RestoreCarriedColliders();
+            _carriedInteractable = null;
+            _carriedRigidbody = null;
+            _carriedColliders = null;
+            _carriedColliderStates = null;
         }
 
         private Vector3 GetDropTargetPosition()

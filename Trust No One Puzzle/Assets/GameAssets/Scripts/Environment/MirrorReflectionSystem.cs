@@ -7,6 +7,9 @@ namespace GameAssets.Scripts.Environment
         [Tooltip("Assign CharacterController here.")]
         [SerializeField] private Transform player;
         [SerializeField] private Transform mirrorCam;
+        [SerializeField] private float rotationLimit;
+        
+        
         
         private void Update()
         {
@@ -17,8 +20,10 @@ namespace GameAssets.Scripts.Environment
         {
             var mirrorPos = new Vector3(transform.position.x, player.position.y, transform.position.z);
             var startPos = player.position - mirrorPos;
-            var angle = Vector3.SignedAngle(startPos, transform.forward, Vector3.up);
+            var angle = 225 + Vector3.SignedAngle(startPos, transform.forward, Vector3.up)/2f;
 
+            angle = Mathf.Clamp(angle, 260, 280);
+            
             mirrorCam.localEulerAngles = new Vector3(0, angle, 0);
         }
     }

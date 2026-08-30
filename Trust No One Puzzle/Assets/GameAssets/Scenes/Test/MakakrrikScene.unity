@@ -851,6 +851,7 @@ MonoBehaviour:
   hintPrefab: {fileID: 7843629100090928690, guid: 73b650933d81a7a4580a2a248d0adfa0, type: 3}
   hintParent: {fileID: 2041290734}
   hintSource: {fileID: 2041290738}
+  destroyDelay: 0
   hints:
   - The key is in a drawer
 --- !u!1001 &2597889598976624931
@@ -864,6 +865,10 @@ PrefabInstance:
     - target: {fileID: 151088739143321002, guid: 094f4d7dd611bdd4d82024d546b3bd7f, type: 3}
       propertyPath: m_Name
       value: Mirror
+      objectReference: {fileID: 0}
+    - target: {fileID: 486014392842834036, guid: 094f4d7dd611bdd4d82024d546b3bd7f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3062557876727219787, guid: 094f4d7dd611bdd4d82024d546b3bd7f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -904,6 +909,10 @@ PrefabInstance:
     - target: {fileID: 3062557876727219787, guid: 094f4d7dd611bdd4d82024d546b3bd7f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5051805794486252853, guid: 094f4d7dd611bdd4d82024d546b3bd7f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.43
       objectReference: {fileID: 0}
     - target: {fileID: 7964966588919937223, guid: 094f4d7dd611bdd4d82024d546b3bd7f, type: 3}
       propertyPath: player

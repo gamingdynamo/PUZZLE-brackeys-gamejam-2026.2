@@ -769,6 +769,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameAssets.Scripts.Entities.Interactable
   displayName: Key
+  pickupSound: {fileID: 0}
+  dropSound: {fileID: 0}
+  throwSound: {fileID: 0}
 --- !u!54 &510111137
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -905,6 +908,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameAssets.Scripts.Entities.Interactable
   displayName: BOX
+  pickupSound: {fileID: 0}
+  dropSound: {fileID: 0}
+  throwSound: {fileID: 0}
 --- !u!65 &664891296
 BoxCollider:
   m_ObjectHideFlags: 0

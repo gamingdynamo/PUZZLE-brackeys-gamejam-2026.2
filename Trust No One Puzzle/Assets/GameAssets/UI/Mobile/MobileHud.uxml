@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="Theme/MobileTheme.uss" />
+    <ui:VisualElement name="hud-root" class="hud-root" picking-mode="Ignore">
+        <ui:VisualElement class="hud-safe" picking-mode="Ignore">
+            <ui:Label name="prompt" text="" class="prompt-chip" />
+            <ui:VisualElement class="hud-row">
+                <ui:Button name="btn-phone" text="Phone" class="phone-fab" />
+                <ui:VisualElement class="hud-cluster">
+                    <ui:Label name="distance" text="" class="distance-chip" />
+                    <ui:Button name="btn-shove" text="Move" class="hud-btn hidden" />
+                    <ui:Button name="btn-drop" text="Drop" class="hud-btn hidden" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

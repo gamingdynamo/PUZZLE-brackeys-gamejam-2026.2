@@ -1,0 +1,407 @@
+/* Stock Android / AOSP Messages look (light Material). */
+
+:root {
+    --md-blue: rgb(26, 115, 232);
+    --md-blue-dark: rgb(23, 78, 166);
+    --surface: rgb(255, 255, 255);
+    --bg: rgb(248, 249, 250);
+    --chat-bg: rgb(241, 243, 244);
+    --on-surface: rgb(32, 33, 36);
+    --secondary: rgb(95, 99, 104);
+    --incoming: rgb(232, 234, 237);
+    --outgoing: rgb(26, 115, 232);
+    --outgoing-text: rgb(255, 255, 255);
+    --bezel: rgb(20, 20, 22);
+    --nav: rgb(255, 255, 255);
+    --hairline: rgb(218, 220, 224);
+    --ripple: rgba(26, 115, 232, 0.12);
+    --shadow: rgba(60, 64, 67, 0.3);
+    --error: rgb(217, 48, 37);
+    --ok: rgb(24, 128, 56);
+}
+
+/* ───────── Phone overlay ───────── */
+
+.phone-root {
+    flex-grow: 1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.phone-root.hidden {
+    display: none;
+}
+
+.phone-frame {
+    width: 360px;
+    height: 740px;
+    max-height: 92%;
+    background-color: var(--bezel);
+    border-radius: 28px;
+    padding: 10px 8px 8px 8px;
+    flex-direction: column;
+    border-width: 1px;
+    border-color: rgb(48, 48, 50);
+}
+
+.phone-notch {
+    align-self: center;
+    width: 12px;
+    height: 12px;
+    background-color: rgb(8, 8, 10);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    border-width: 2px;
+    border-color: rgb(40, 40, 44);
+}
+
+.phone-status {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+    padding-left: 16px;
+    padding-right: 14px;
+    background-color: var(--surface);
+}
+
+.phone-carrier {
+    color: var(--on-surface);
+    font-size: 11px;
+    unity-font-style: bold;
+    letter-spacing: 0;
+}
+
+.phone-clock {
+    color: var(--on-surface);
+    font-size: 12px;
+    unity-font-style: bold;
+}
+
+.phone-signal {
+    color: var(--on-surface);
+    font-size: 11px;
+}
+
+.phone-screen {
+    flex-grow: 1;
+    background-color: var(--chat-bg);
+    flex-direction: column;
+}
+
+.phone-header {
+    flex-direction: row;
+    align-items: center;
+    height: 56px;
+    padding-left: 4px;
+    padding-right: 8px;
+    background-color: var(--surface);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--hairline);
+}
+
+.icon-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 24px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    color: var(--secondary);
+    font-size: 20px;
+    unity-text-align: middle-center;
+    margin-right: 4px;
+}
+
+.icon-btn:hover {
+    background-color: var(--ripple);
+}
+
+.icon-btn:active {
+    background-color: rgba(26, 115, 232, 0.2);
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+    background-color: rgb(189, 189, 189);
+    margin-right: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-letter {
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    unity-font-style: bold;
+    unity-text-align: middle-center;
+}
+
+.header-text {
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.phone-title {
+    color: var(--on-surface);
+    font-size: 16px;
+    unity-font-style: bold;
+    letter-spacing: 0;
+}
+
+.phone-subtitle {
+    color: var(--secondary);
+    font-size: 12px;
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: var(--md-blue);
+    display: none;
+    margin-right: 8px;
+}
+
+.unread-dot.visible {
+    display: flex;
+}
+
+.chat-scroll {
+    flex-grow: 1;
+    background-color: var(--chat-bg);
+}
+
+.chat-list {
+    flex-direction: column;
+    padding: 8px 8px 8px 8px;
+}
+
+.bubble {
+    margin-bottom: 4px;
+    margin-top: 2px;
+    padding: 8px 12px;
+    border-radius: 16px;
+    max-width: 78%;
+    background-color: var(--incoming);
+}
+
+.bubble.hint {
+    align-self: flex-start;
+    background-color: var(--incoming);
+    border-left-width: 0;
+}
+
+.bubble.wrong {
+    align-self: flex-end;
+    background-color: var(--outgoing);
+    border-left-width: 0;
+}
+
+.bubble-tag {
+    font-size: 10px;
+    unity-font-style: bold;
+    margin-bottom: 2px;
+    color: var(--secondary);
+    letter-spacing: 0.4px;
+}
+
+.bubble.wrong .bubble-tag {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.bubble-text {
+    color: var(--on-surface);
+    font-size: 14px;
+    white-space: normal;
+}
+
+.bubble.wrong .bubble-text {
+    color: var(--outgoing-text);
+}
+
+.phone-footer {
+    flex-direction: row;
+    align-items: center;
+    height: 56px;
+    padding-left: 8px;
+    padding-right: 8px;
+    background-color: var(--chat-bg);
+}
+
+.composer {
+    flex-grow: 1;
+    height: 40px;
+    border-radius: 20px;
+    background-color: var(--surface);
+    border-width: 1px;
+    border-color: var(--hairline);
+    padding-left: 16px;
+    padding-right: 8px;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 8px;
+}
+
+.composer-hint {
+    color: rgb(154, 160, 166);
+    font-size: 14px;
+    flex-grow: 1;
+}
+
+.send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: var(--md-blue);
+    border-width: 0;
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    unity-text-align: middle-center;
+}
+
+.send-btn:active {
+    background-color: var(--md-blue-dark);
+}
+
+.warn-label {
+    display: none;
+}
+
+.ghost-btn {
+    display: none;
+}
+
+.nav-bar {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 48px;
+    background-color: var(--nav);
+    border-top-width: 1px;
+    border-top-color: var(--hairline);
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+.nav-icon {
+    color: rgb(60, 64, 67);
+    font-size: 18px;
+    width: 48px;
+    height: 40px;
+    unity-text-align: middle-center;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.nav-icon:active {
+    background-color: var(--ripple);
+    border-radius: 20px;
+}
+
+/* ───────── In-game HUD (Android-style FABs) ───────── */
+
+.hud-root {
+    flex-grow: 1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.hud-safe {
+    flex-grow: 1;
+    padding: 16px;
+    justify-content: flex-end;
+}
+
+.hud-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    pointer-events: auto;
+}
+
+.hud-cluster {
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.hud-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background-color: rgb(232, 234, 237);
+    border-width: 0;
+    color: var(--on-surface);
+    font-size: 11px;
+    unity-font-style: bold;
+    margin-bottom: 12px;
+    unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.hud-btn:active,
+.hud-btn.pressed {
+    background-color: var(--md-blue);
+    color: rgb(255, 255, 255);
+}
+
+.hud-btn.hidden {
+    display: none;
+}
+
+.phone-fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background-color: var(--md-blue);
+    border-width: 0;
+    color: rgb(255, 255, 255);
+    font-size: 11px;
+    unity-font-style: bold;
+    unity-text-align: middle-center;
+}
+
+.phone-fab:active {
+    background-color: var(--md-blue-dark);
+}
+
+.prompt-chip {
+    align-self: center;
+    margin-bottom: 16px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: rgba(32, 33, 36, 0.8);
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    display: none;
+    pointer-events: none;
+}
+
+.prompt-chip.visible {
+    display: flex;
+}
+
+.distance-chip {
+    color: var(--secondary);
+    font-size: 11px;
+    margin-bottom: 6px;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: none;
+}
+
+.distance-chip.visible {
+    display: flex;
+}
